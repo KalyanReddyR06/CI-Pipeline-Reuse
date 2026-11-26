@@ -36,13 +36,13 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Run Tests
-        working-directory: frontend
-        run: npm test
-
       - name: Build React Application
         working-directory: frontend
         run: npm run build
+
+      - name: Run Tests
+        working-directory: frontend
+        run: npm test
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
