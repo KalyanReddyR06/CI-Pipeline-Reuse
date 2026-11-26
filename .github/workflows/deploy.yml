@@ -38,6 +38,8 @@ jobs:
 
       - name: Build React Application
         working-directory: frontend
+        env:
+          VITE_API_BASE: https://ci-pipeline-reuse.onrender.com
         run: npm run build
 
       - name: Run Tests
