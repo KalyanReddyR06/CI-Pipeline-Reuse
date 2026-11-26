@@ -1,8 +1,3 @@
-"""
-FastAPI application entrypoint for the CI Pipeline Step Reuse prototype.
-
-Phases A–C: analyzer, SQLite CRUD, local execution simulator.
-"""
 
 from contextlib import asynccontextmanager
 
@@ -21,15 +16,11 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(
     title="CI Pipeline Step Reuse",
-    description=(
-        "Prototype for detecting undeclared dependencies between reusable "
-        "CI pipeline steps."
-    ),
+    description="API for reusable CI pipeline steps",
     version="0.1.0",
     lifespan=lifespan,
 )
 
-# Allow the Vite dev server (and typical local ports) to call the API.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -37,16 +28,23 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://localhost:4173",
         "http://127.0.0.1:4173",
+        "https://kalyanreddyr06.github.io",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(pipelines.router)
-app.include_router(executions.router)
+
+@app.get("/")
+def root():
+    return {"message": "CI Pipeline Reuse API is running"}
 
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+app.include_router(pipelines.router)
+app.include_router(executions.router)
