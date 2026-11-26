@@ -1,8 +1,11 @@
+
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes, Outlet } from 'react-router-dom';
+
 import AppShell from './components/AppShell';
 import { ToastProvider } from './context/ToastContext';
 import { api } from './api';
+
 import Dashboard from './pages/Dashboard';
 import Pipelines from './pages/Pipelines';
 import PipelineDetail from './pages/PipelineDetail';
@@ -16,6 +19,7 @@ function ShellWithHealth() {
 
   useEffect(() => {
     let alive = true;
+
     async function ping() {
       try {
         await api.health();
@@ -24,21 +28,28 @@ function ShellWithHealth() {
         if (alive) setApiOk(false);
       }
     }
+
     ping();
+
     const id = window.setInterval(ping, 15000);
+
     return () => {
       alive = false;
       window.clearInterval(id);
     };
   }, []);
 
-  return <AppShell apiOk={apiOk} />;
+  return (
+    <AppShell apiOk={apiOk}>
+      <Outlet />
+    </AppShell>
+  );
 }
 
 export default function App() {
   return (
     <ToastProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route element={<ShellWithHealth />}>
             <Route path="/" element={<Dashboard />} />
@@ -51,7 +62,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </ToastProvider>
   );
 }
